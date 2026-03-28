@@ -6,17 +6,11 @@ from PIL import Image
 
 st.set_page_config(page_title="AI Misinformation Analyzer", layout="centered")
 
-# Styling
+# Title
 st.markdown("""
-<style>
-.big-title {
-    font-size: 36px;
-    font-weight: bold;
-}
-</style>
+<h1 style='text-align: center; color: #00ffe1;'>🧠 AI Misinformation Analyzer</h1>
 """, unsafe_allow_html=True)
 
-st.markdown('<p class="big-title">🧠 AI Misinformation Analyzer</p>', unsafe_allow_html=True)
 st.write("Detect fake news • Understand why • Verify smarter")
 
 # History
@@ -104,3 +98,6 @@ if st.button("Analyze") and user_input:
 st.subheader("📜 Recent Checks")
 for item in st.session_state.history[-5:]:
     st.write(f"{item['verdict']} ({item['score']}%) - {item['text']}")
+
+st.markdown("---")
+st.write("Built by Pranjal 🚀")
