@@ -12,11 +12,9 @@ st.markdown("""
 
 st.write("Explainable AI for misinformation detection")
 
-# History
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# Input type
 option = st.radio("Choose input type:", ["Text", "Upload PDF", "Upload Image"])
 
 user_input = ""
@@ -40,7 +38,6 @@ forwarded = st.checkbox("This is a forwarded message")
 
 if st.button("Analyze") and user_input:
 
-    # BONUS TRIM
     if len(user_input) > 500:
         st.warning("Input too long, trimming...")
         user_input = user_input[:500]
@@ -58,7 +55,6 @@ if st.button("Analyze") and user_input:
     else:
         st.success("High credibility")
 
-    # Flags
     st.subheader("🚨 Red Flags")
     if flags:
         for f in flags:
@@ -66,28 +62,20 @@ if st.button("Analyze") and user_input:
     else:
         st.write("No obvious red flags")
 
-    # Explanation
     st.subheader("🧠 Explanation")
-    st.write("This decision is based on semantic similarity, contradiction detection, and model confidence.")
+    st.write("Decision based on semantic similarity, contradiction detection, and model confidence.")
 
-    # Links
     st.subheader("🔎 Verify Yourself")
     links = generate_links(user_input)
     for name, link in links.items():
         st.write(f"{name}: {link}")
 
-    # Evidence
     st.subheader("📰 Supporting Evidence")
     if articles:
         for a in articles:
             st.write("- " + a)
     else:
         st.write("No strong supporting evidence found")
-
-# History
-st.subheader("📜 Recent Checks")
-for item in st.session_state.history[-5:]:
-    st.write(item)
 
 st.markdown("---")
 st.write("Built by Pranjal 🚀")
