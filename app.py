@@ -41,6 +41,11 @@ forwarded = st.checkbox("This is a forwarded WhatsApp message")
 
 if st.button("Analyze") and user_input:
 
+    # 🔥 BONUS: Input trimming
+    if len(user_input) > 500:
+        st.warning("Input too long, trimming for analysis...")
+        user_input = user_input[:500]
+
     verdict, score, flags = analyze_news(user_input, forwarded)
 
     # Save history
