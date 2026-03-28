@@ -1,17 +1,16 @@
 import streamlit as st
-from utils import analyze_news, generate_links, fetch_news, explain_flags
+from utils import analyze_news, generate_links
 import pdfplumber
 import pytesseract
 from PIL import Image
 
 st.set_page_config(page_title="AI Misinformation Analyzer", layout="centered")
 
-# Title
 st.markdown("""
 <h1 style='text-align: center; color: #00ffe1;'>🧠 AI Misinformation Analyzer</h1>
 """, unsafe_allow_html=True)
 
-st.write("Detect fake news • Understand why • Verify smarter")
+st.write("Explainable AI for misinformation detection")
 
 # History
 if "history" not in st.session_state:
@@ -37,25 +36,17 @@ elif option == "Upload Image":
         image = Image.open(file)
         user_input = pytesseract.image_to_string(image)
 
-forwarded = st.checkbox("This is a forwarded WhatsApp message")
+forwarded = st.checkbox("This is a forwarded message")
 
 if st.button("Analyze") and user_input:
 
-    # 🔥 BONUS: Input trimming
+    # BONUS TRIM
     if len(user_input) > 500:
-        st.warning("Input too long, trimming for analysis...")
+        st.warning("Input too long, trimming...")
         user_input = user_input[:500]
 
-    verdict, score, flags = analyze_news(user_input, forwarded)
+    verdict, score, flags, articles = analyze_news(user_input, forwarded)
 
-    # Save history
-    st.session_state.history.append({
-        "text": user_input[:100],
-        "score": score,
-        "verdict": verdict
-    })
-
-    # Result
     st.subheader(verdict)
     st.progress(score / 100)
     st.write(f"Trust Score: {score}%")
@@ -67,42 +58,36 @@ if st.button("Analyze") and user_input:
     else:
         st.success("High credibility")
 
-    # Breakdown
-    st.subheader("📊 Analysis Breakdown")
-    st.write("Model Score:", score)
-    st.write("Pattern Risk:", len(flags))
-
     # Flags
     st.subheader("🚨 Red Flags")
     if flags:
         for f in flags:
             st.write(f"- {f}")
     else:
-        st.write("No obvious red flags detected")
+        st.write("No obvious red flags")
 
     # Explanation
     st.subheader("🧠 Explanation")
-    st.write(explain_flags(flags))
-
-    if st.button("Explain Simply"):
-        st.write("This message may be trying to mislead using emotions or missing proof.")
+    st.write("This decision is based on semantic similarity, contradiction detection, and model confidence.")
 
     # Links
-    st.subheader("🔎 Verify from sources")
+    st.subheader("🔎 Verify Yourself")
     links = generate_links(user_input)
     for name, link in links.items():
         st.write(f"{name}: {link}")
 
-    # News
-    st.subheader("📰 Related News")
-    news = fetch_news(user_input)
-    for n in news:
-        st.write("- " + n)
+    # Evidence
+    st.subheader("📰 Supporting Evidence")
+    if articles:
+        for a in articles:
+            st.write("- " + a)
+    else:
+        st.write("No strong supporting evidence found")
 
 # History
 st.subheader("📜 Recent Checks")
 for item in st.session_state.history[-5:]:
-    st.write(f"{item['verdict']} ({item['score']}%) - {item['text']}")
+    st.write(item)
 
 st.markdown("---")
 st.write("Built by Pranjal 🚀")
