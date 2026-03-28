@@ -8,7 +8,7 @@ sentiment_model = pipeline("sentiment-analysis")
 
 
 def analyze_news(text, forwarded=False):
-    text_en = text  # no translation now
+    text_en = text
 
     fake_result = fake_model(text_en)[0]
     sentiment = sentiment_model(text_en)[0]
@@ -42,24 +42,33 @@ def analyze_news(text, forwarded=False):
 
 
 def generate_links(text):
-    query = urllib.parse.quote(text[:80])
+    clean_query = text.replace("\n", " ").strip()[:80]
+    encoded_query = urllib.parse.quote(clean_query)
 
     return {
-        "Google News": f"https://news.google.com/search?q={query}",
-        "Fact Check": f"https://www.google.com/search?q={query}+fact+check",
-        "Alt News": f"https://www.altnews.in/?s={query}"
+        "Google News": f"https://news.google.com/search?q={encoded_query}",
+        "Fact Check": f"https://www.google.com/search?q={encoded_query}+fact+check",
+        "Alt News": f"https://www.altnews.in/?s={encoded_query}"
     }
 
 
 def fetch_news(query):
-    url = f"https://news.google.com/rss/search?q={query}"
-    feed = feedparser.parse(url)
+    try:
+        clean_query = query.replace("\n", " ").strip()[:100]
+        encoded_query = urllib.parse.quote(clean_query)
 
-    articles = []
-    for entry in feed.entries[:5]:
-        articles.append(entry.title)
+        url = f"https://news.google.com/rss/search?q={encoded_query}"
 
-    return articles
+        feed = feedparser.parse(url)
+
+        articles = []
+        for entry in feed.entries[:5]:
+            articles.append(entry.title)
+
+        return articles
+
+    except Exception:
+        return ["Could not fetch related news. Try a shorter or simpler input."]
 
 
 def explain_flags(flags):
