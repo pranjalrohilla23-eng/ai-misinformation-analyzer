@@ -45,7 +45,6 @@ def fetch_news(query):
     except:
         return []
 
-
 # ================= AI LOGIC =================
 
 def semantic_evidence_score(text, articles):
@@ -87,7 +86,6 @@ def contradiction_score(claim, articles):
 
     return sum(scores) / len(scores)
 
-
 # ================= MAIN FUNCTION =================
 
 def analyze_news(text, forwarded=False):
@@ -97,10 +95,10 @@ def analyze_news(text, forwarded=False):
     # -------- TYPE DETECTION --------
 
     if len(text_en.split()) < 8 and " is " in text_en:
-        return "✅ Likely Reliable", 90, ["Simple factual statement"]
+        return "✅ Likely Reliable", 90, ["Simple factual statement"], []
 
     if any(word in text_en for word in ["i think", "i believe"]):
-        return "⚖️ Opinion (Not verifiable)", 50, ["Subjective statement"]
+        return "⚖️ Opinion (Not verifiable)", 50, ["Subjective statement"], []
 
     flags = []
 
