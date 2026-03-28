@@ -1,22 +1,14 @@
 from transformers import pipeline
 import urllib.parse
-from googletrans import Translator
 import feedparser
 
 # Load models
 fake_model = pipeline("text-classification", model="mrm8488/bert-tiny-finetuned-fake-news-detection")
 sentiment_model = pipeline("sentiment-analysis")
 
-translator = Translator()
-
-def translate_to_english(text):
-    try:
-        return translator.translate(text, dest='en').text
-    except:
-        return text
 
 def analyze_news(text, forwarded=False):
-    text_en = translate_to_english(text)
+    text_en = text  # no translation now
 
     fake_result = fake_model(text_en)[0]
     sentiment = sentiment_model(text_en)[0]
