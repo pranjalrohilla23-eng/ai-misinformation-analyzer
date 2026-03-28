@@ -1,0 +1,8 @@
+streamlit
+transformers
+torch
+pytesseract
+Pillow
+pdfplumber
+googletrans==4.0.0-rc1
+feedparser
