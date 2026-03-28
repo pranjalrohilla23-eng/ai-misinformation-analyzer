@@ -4,5 +4,4 @@ torch
 pytesseract
 Pillow
 pdfplumber
-tesseract-ocr
 feedparser
